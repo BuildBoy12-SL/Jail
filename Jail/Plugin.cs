@@ -41,6 +41,7 @@ namespace Jail
         {
             Instance = this;
             Exiled.Events.Handlers.Server.WaitingForPlayers += JailedPlayers.Clear;
+            Exiled.Events.Handlers.Server.ReloadedConfigs += ReloadCommands;
             base.OnEnabled();
         }
 
@@ -48,6 +49,7 @@ namespace Jail
         public override void OnDisabled()
         {
             Exiled.Events.Handlers.Server.WaitingForPlayers -= JailedPlayers.Clear;
+            Exiled.Events.Handlers.Server.ReloadedConfigs -= ReloadCommands;
             Instance = null;
             base.OnDisabled();
         }
@@ -64,6 +66,12 @@ namespace Jail
                 CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(command);
                 Commands[typeof(RemoteAdminCommandHandler)][command.GetType()] = command;
             }
+        }
+
+        private void ReloadCommands()
+        {
+            OnUnregisteringCommands();
+            OnRegisteringCommands();
         }
     }
 }
